@@ -196,13 +196,15 @@ class Mention {
       render.denotationChar = '';
     }
 
-    const prevMentionCharPos = this.mentionCharPos;
+    if (void 0 === this.cursorPos) throw new Error("Invalid this.cursorPos");
 
-    this.quill
-      .deleteText(this.mentionCharPos, this.cursorPos - this.mentionCharPos, Quill.sources.USER);
-    this.quill.insertEmbed(prevMentionCharPos, 'mention', render, Quill.sources.USER);
-    this.quill.insertText(prevMentionCharPos + 1, ' ', Quill.sources.USER);
-    this.quill.setSelection(prevMentionCharPos + 2, Quill.sources.USER);
+    if (!render.value) throw new Error("Data not valid");
+
+    //this.quill.deleteText(this.mentionCharPos, this.cursorPos - this.mentionCharPos, Quill.sources.USER);
+    // this.quill.insertEmbed(prevMentionCharPos, 'mention', render, Quill.sources.USER);
+    this.quill.insertText(this.cursorPos, render.value, Quill.sources.USER);
+    this.quill.setSelection(this.cursorPos + render.value.length, 0);
+    this.setCursorPos();
     this.hideMentionList();
   }
 
@@ -254,16 +256,7 @@ class Mention {
         li.onclick = this.onItemClick.bind(this);
         this.mentionList.appendChild(this.attachDataValues(li, e));
       }
-      // for (let i = 0; i < data.length; i += 1) {
-      //   const li = document.createElement('li');
-      //   li.className = this.options.listItemClass ? this.options.listItemClass : '';
-      //   li.dataset.index = i;
-      //   li.innerHTML = this.options.renderItem(data[i], searchTerm);
-      //   li.onmouseenter = this.onItemMouseEnter.bind(this);
-      //   li.dataset.denotationChar = mentionChar;
-      //   li.onclick = this.onItemClick.bind(this);
-      //   this.mentionList.appendChild(this.attachDataValues(li, data[i]));
-      // }
+
       this.itemIndex = 0;
       this.highlightItem();
       this.showMentionList();
@@ -333,7 +326,10 @@ class Mention {
 
   setMentionContainerPosition() {
     const containerPos = this.quill.container.getBoundingClientRect();
-    const mentionCharPos = this.quill.getBounds(this.mentionCharPos);
+
+    if (void 0 === this.cursorPos) throw new Error("Invalid this.cursorPos");
+
+    const mentionCharPos = this.quill.getBounds(this.cursorPos);
     const containerHeight = this.mentionContainer.offsetHeight;
 
     let topPos = this.options.offsetTop;
@@ -394,13 +390,13 @@ class Mention {
       }
     }
 
-    if (topPos >= 0) {
-      this.mentionContainer.classList.add(`${this.options.mentionContainerClass}-bottom`);
-      this.mentionContainer.classList.remove(`${this.options.mentionContainerClass}-top`);
-    } else {
-      this.mentionContainer.classList.add(`${this.options.mentionContainerClass}-top`);
-      this.mentionContainer.classList.remove(`${this.options.mentionContainerClass}-bottom`);
-    }
+    // if (topPos >= 0) {
+    //   this.mentionContainer.classList.add(`${this.options.mentionContainerClass}-bottom`);
+    //   this.mentionContainer.classList.remove(`${this.options.mentionContainerClass}-top`);
+    // } else {
+    //   this.mentionContainer.classList.add(`${this.options.mentionContainerClass}-top`);
+    //   this.mentionContainer.classList.remove(`${this.options.mentionContainerClass}-bottom`);
+    // }
 
     this.mentionContainer.style.top = `${topPos}px`;
     this.mentionContainer.style.left = `${leftPos}px`;
