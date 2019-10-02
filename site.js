@@ -7,9 +7,22 @@ const hashValues = [
   { id: 4, value: 'Patrik Sjölin 2' }
 ];
 
+const bindings = {
+  tab: {
+    key: 9,
+    handler: function () {
+      console.log("Hello!");
+
+    }
+  }
+}
+
 const quill = new Quill('#editor', {
   theme: 'snow',
   modules: {
+    keyboard: {
+      bindings: bindings
+    },
     mention: {
       allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
       mentionDenotationChars: ["@", "#"],
@@ -34,3 +47,5 @@ const quill = new Quill('#editor', {
     },
   }
 });
+
+quill.getModule('mention').options.source('Fr', (matches, searchTerm) => { }, '#');
