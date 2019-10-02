@@ -1,51 +1,22 @@
-const atValues = [
-  { id: 1, value: 'Fredrik Sundqvist' },
-  { id: 2, value: 'Patrik Sjölin' }
-];
-const hashValues = [
-  { id: 3, value: 'Fredrik Sundqvist 2' },
-  { id: 4, value: 'Patrik Sjölin 2' }
-];
+const TAB = 9;
 
-const bindings = {
-  tab: {
-    key: 9,
-    handler: function () {
-      console.log("Hello!");
 
-    }
-  }
-}
-
-const quill = new Quill('#editor', {
+const editorOptions = {
   theme: 'snow',
   modules: {
-    keyboard: {
-      bindings: bindings
-    },
-    mention: {
-      allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-      mentionDenotationChars: ["@", "#"],
-      source: function (searchTerm, renderList, mentionChar) {
-        let values;
-
-        if (mentionChar === "@") {
-          values = atValues;
-        } else {
-          values = hashValues;
-        }
-
-        if (searchTerm.length === 0) {
-          renderList(values, searchTerm);
-        } else {
-          const matches = [];
-          for (i = 0; i < values.length; i++)
-            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())) matches.push(values[i]);
-          renderList(matches, searchTerm);
-        }
-      },
-    },
+    mention: {}
   }
+};
+
+const editor = new Quill('#editor', editorOptions);
+const suggestions = editor.getModule('mention');
+
+editor.keyboard.addBinding({ key: TAB }, () => {
+  foo();
 });
 
-quill.getModule('mention').options.source('Fr', (matches, searchTerm) => { }, '#');
+editor.keyboard.bindings[TAB].unshift(editor.keyboard.bindings[TAB].pop());
+
+let foo = () => {
+  suggestions.trigger(['daniel', 'vega']);
+}
