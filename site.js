@@ -1,5 +1,5 @@
 const TAB = 9;
-
+const paddingText = document.getElementById('padding-text');
 
 const editorOptions = {
   theme: 'snow',
@@ -18,29 +18,24 @@ editor.keyboard.addBinding({ key: TAB }, () => {
 editor.keyboard.bindings[TAB].unshift(editor.keyboard.bindings[TAB].pop());
 
 let foo = async () => {
-  const r = editor.getText(0, suggestions.getCursorPos());
-  const payload = {'text': r}
-  const url = 'http://98.253.67.62:1338/predict';
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  suggestions.trigger(await response.json());
+  const editorText = editor.getText(0, suggestions.getCursorPos());
+  const context = getPaddingText() + editorText;
+  const payload = { 'text': context }
+  suggestions.trigger(await predictions(payload));
 }
 
 
 const predictions = async (text) => {
-  const url = 'http://127.0.0.1:5000/predict';
+  const url = 'http://98.253.67.62:1338/predict';
   const response = await fetch(url, {
     method: "POST",
+    cache: 'no-cache',
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(text)
   });
   return await response.json();
-} 
+}
+
+const getPaddingText = () => paddingText.value + "\n";
