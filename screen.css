@@ -6,9 +6,130 @@
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section{display:block}html{line-height:1}body{line-height:inherit}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 /* stylelint-enable */
 
+/* https://www.modularscale.com/?22&px&1.25 */
+
+@font-face {
+  font-family: 'medium-marketing-display-font';
+  font-weight: 500;
+  font-style: normal;
+  src: url('/fonts/noe-display-500-normal.woff');
+}
+
+:root {
+  --dark-background: #222222;
+  --light-background: #FFFFFF;
+  --dark-text-color: #222222;
+  --light-text-color: #FFFFFF;
+
+  --base-text: 1em; /* 22px */
+  --text-level3: 1.25em; /* 27.5px */
+  --text-level2: 1.563em; /* 34.375px */
+  --text-level1: 1.953em; /* 42.969px */
+  --text-line-height: 1.25em; /* 125% */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--light-background);
+  color: var(--dark-text-color);
+  font-family: -apple-system, BlinkMacSystemFont,".SFNSText-Regular", 'Product Sans', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 1.375em; /* 22 / 16 = 1.375em */
+  line-height: var(--text-line-height); /* 22 * 125% = 1.25em */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: var(--text-level1); /* 42.969 / 22 = 1.953em */
+  line-height: var(--text-line-height); /* 42.969 * 125% = 1.25em */
+  font-family: 'medium-marketing-display-font';
+  font-style: normal;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: var(--text-level2); /* 34.375px */
+  line-height: var(--text-line-height); /* 42.969 * 125% = 1.25em */
+  font-weight: 700;
+}
+
+h3 {
+  font-size: var(--text-level3); /* 34.375px */
+  line-height: var(--text-line-height); /* 42.969 * 125% = 1.25em */
+  font-weight: 500;
+}
+
+#page {
+  width: 100%;
+  height: 100%;
+  padding: 0.727272em; /* 16 / 22 = 0.727272em */
+}
+
+article {
+  width: 100%;
+  height: 100%;
+}
+
 textarea {
   -webkit-appearance: none;
   resize: none;
   display: block;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 300;
   width: 100%;
+  border-color: rgb(204, 204, 204);
+}
+
+#padding-text {
+  font-family: serif;
+  font-size: 0.5em;
+}
+
+#editor {
+  padding-bottom: 50px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-gap: 0.727272em; /* 16 / 22 = 0.727272em */
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.cols-1 {
+  grid-column: 1;
+}
+
+.cols-2 {
+  grid-column: 1 / 3;
+}
+
+.cols-3 {
+  grid-column: 1 / 4;
+}
+
+.cols-4 {
+  grid-column: 1 / 5;
+}
+
+.cols-reverse-1 {
+  grid-column: -2 / -1;
+}
+
+.cols-reverse-2 {
+  grid-column: -3 / -1;
+}
+
+.cols-reverse-3 {
+  grid-column: -4 / -1;
+}
+
+.cols-reverse-4 {
+  grid-column: -5 / -1;
 }
