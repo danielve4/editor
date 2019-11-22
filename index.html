@@ -14,20 +14,45 @@
 </head>
 
 <body>
-  <div id="page">
-    <h1>Wizard Editor</h1>
-    <article>
-      <h2>Padding Text</h2>
-      <section>
-        <textarea id="padding-text"></textarea>
-      </section>
+  <div id="page" class="grid-4">
+    <h1 class="cols-4">Wizard</h1>
+    <article class="cols-4 grid-4">
+      <h2 class="cols-4">Word Predictor</h2>
+      <article class="cols-4 grid-4">
+        <h3 class="cols-4">Padding Text</h2>
+          <textarea rows="5" placeholder="Sample text here" id="padding-text" class="cols-4"></textarea>
+      </article>
+
+      <article class="cols-4 grid-4">
+        <h3 class="cols-4">Editor</h2>
+          <div class="cols-4" id="editor-container">
+            <div id="editor">
+              Start writing here!
+            </div>
+          </div>
+      </article>
     </article>
 
-    <article>
-      <h2>Editor</h2>
-      <div id="editor">
-        Start writing here!
-      </div>
+    <article class="cols-4 grid-4">
+      <h2 class="cols-4">Q &amp; A</h2>
+      <form class="cols-4 grid-4">
+        <label for="question" class="cols-1">Q:</label>
+        <input type="text" id="question" name="question" class="cols-reverse-3">
+        <input type="submit" value="Ask" class="cols-1">
+      </form>
+      <output class="cols-4">
+        A: 
+      </output>
+    </article>
+
+    <article class="cols-4 grid-4">
+      <h2 class="cols-4">Freeform Prompt</h2>
+      <form class="cols-4">
+        <textarea rows="5" placeholder="Sample text here" id="freeform-text" class="cols-4"></textarea>
+      </form>
+      <output class="cols-4">
+        The output
+      </output>
     </article>
   </div>
 
