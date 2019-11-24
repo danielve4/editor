@@ -16,10 +16,15 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 }
 
 :root {
-  --dark-background: #222222;
+  --dark-background: #000000;
+  --dark-a-background: #032535;
   --light-background: #FFFFFF;
   --dark-text-color: #222222;
+  --dark-a-text-color: #FFFFFF;
   --light-text-color: #FFFFFF;
+
+  --card-outline: #c00b0a;
+
 
   --base-text: 1em; /* 22px */
   --text-level3: 1.25em; /* 27.5px */
@@ -33,8 +38,8 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 }
 
 html {
-  background-color: var(--light-background);
-  color: var(--dark-text-color);
+  background-color: var(--dark-a-background);
+  color: var(--dark-a-text-color);
   font-family: -apple-system, BlinkMacSystemFont,".SFNSText-Regular", 'Product Sans', Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 1.375em; /* 22 / 16 = 1.375em */
@@ -74,16 +79,26 @@ h3 {
 article {
   width: 100%;
   height: 100%;
+  padding: 16px;
+  border: solid 1px var(--card-outline);
+  border-radius: 5px;
 }
 
-textarea {
+textarea, input {
   -webkit-appearance: none;
   resize: none;
   display: block;
   font-family: inherit;
   font-size: inherit;
+  border: 0;
+  padding: 0;
+  background: #1e2225;
+}
+
+textarea {
   font-weight: 300;
   width: 100%;
+  border: solid 1px;
   border-color: rgb(204, 204, 204);
 }
 
