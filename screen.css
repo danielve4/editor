@@ -23,8 +23,8 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
   --dark-a-text-color: #FFFFFF;
   --light-text-color: #FFFFFF;
 
-  --card-outline: #c00b0a;
-
+  --card-outline-red: #c00b0a;
+  --card-outline: #222222;
 
   --base-text: 1em; /* 22px */
   --text-level3: 1.25em; /* 27.5px */
@@ -38,8 +38,8 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 }
 
 html {
-  background-color: var(--dark-a-background);
-  color: var(--dark-a-text-color);
+  background-color: var(--light-background);
+  color: var(--dark-text-color);
   font-family: -apple-system, BlinkMacSystemFont,".SFNSText-Regular", 'Product Sans', Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 1.375em; /* 22 / 16 = 1.375em */
@@ -76,6 +76,10 @@ h3 {
   padding: 0.727272em; /* 16 / 22 = 0.727272em */
 }
 
+strong {
+  font-weight: bold;
+}
+
 article {
   width: 100%;
   height: 100%;
@@ -92,14 +96,25 @@ textarea, input {
   font-size: inherit;
   border: 0;
   padding: 0;
-  background: #1e2225;
+  background: var(--light-background);
 }
 
 textarea {
   font-weight: 300;
   width: 100%;
-  border: solid 1px;
-  border-color: rgb(204, 204, 204);
+  border: solid 1px var(--dark-background);
+  padding: 5px;
+}
+
+#question {
+  border: solid 1px var(--dark-background);
+  padding-left: 5px;
+}
+
+#ask-question,
+#finish-freeform {
+  border: solid 2px var(--dark-background);
+  height: 2em;
 }
 
 #padding-text {
@@ -147,4 +162,43 @@ textarea {
 
 .cols-reverse-4 {
   grid-column: -5 / -1;
+}
+
+/* 480px @ 16px/em*/
+/* Based on an 4 column grid with 16px gutters*/
+@media screen and (min-width: 30em) {
+  
+}
+
+/* 600px @ 16px/em*/
+/* Based on an 8 column grid with 16px gutters*/
+@media screen and (min-width: 37.5em) {
+}
+
+/* 840px @ 16px/em*/
+/* Based on a 12 column grid with 24px gutters*/
+@media screen and (min-width: 52.5em) {
+  .md-grid-12 {
+    display: grid;
+    grid-gap: 0.727272em; /* 16 / 22 = 0.727272em */
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .md-cols-12 {
+    grid-column: 1 / 13;
+  }
+
+  .md-cols-6 {
+    grid-column: span 6;
+  }
+}
+
+/* 960px @ 16px/em*/
+/* Based on a 12 column grid with 24px gutters*/
+@media screen and (min-width: 60em) {
+}
+
+/* 1440px @ 16px/em*/
+/* Based on a 12 column grid with 24px gutters*/
+@media screen and (min-width: 90em) {
 }

@@ -14,9 +14,9 @@
 </head>
 
 <body>
-  <div id="page" class="grid-4">
+  <div id="page" class="grid-4 md-grid-12">
     <h1 class="cols-4">WIZARD</h1>
-    <article class="cols-4 grid-4">
+    <article class="cols-4 grid-4 md-cols-12">
       <h2 class="cols-4">Word Predictor</h2>
       <section class="cols-4 grid-4">
         <h3 class="cols-4">Padding Text</h2>
@@ -33,25 +33,26 @@
       </section>
     </article>
 
-    <article class="cols-4 grid-4">
+    <article class="cols-4 grid-4 md-cols-6">
       <h2 class="cols-4">Q &amp; A</h2>
-      <form class="cols-4 grid-4">
+      <form id="ask-question-form" class="cols-4 grid-4">
         <label for="question" class="cols-1">Question:</label>
-        <input type="text" id="question" name="question" class="cols-4">
-        <input type="submit" value="Ask" class="cols-1">
+        <input type="text" id="question" name="question" class="cols-4" placeholder="Your question here...">
+        <input type="submit" id="ask-question" value="Ask" class="cols-4">
       </form>
-      <output class="cols-4">
-        A:
+      <output class="cols-4" id="answer-output">
+        Answer:
       </output>
     </article>
 
-    <article class="cols-4 grid-4">
+    <article class="cols-4 grid-4 md-cols-6">
       <h2 class="cols-4">Freeform Prompt</h2>
-      <form class="cols-4">
+      <form id="freeform-form" class="cols-4 grid-4">
         <textarea rows="5" placeholder="Sample text here" id="freeform-text" class="cols-4"></textarea>
+        <input type="submit" id="finish-freeform" value="Finish Freeform" class="cols-4">
       </form>
-      <output class="cols-4">
-        The output
+      <output id="freeform-output" class="cols-4">
+        
       </output>
     </article>
   </div>
