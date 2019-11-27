@@ -29,7 +29,7 @@ editor.keyboard.bindings[TAB].unshift(editor.keyboard.bindings[TAB].pop());
 let triggerWordPredictions = async () => {
   const editorText = editor.getText(0, suggestions.getCursorPos());
   const paddingText = getPaddingText();
-  const context = paddingText ? (paddingText + '\n') : '' + editorText;
+  const context = paddingText ? (paddingText + '\n' + editorText) : '' + editorText;
   const payload = {
     "text": context ? context : '<|endoftext|>',
     "samples": 3,
@@ -72,12 +72,13 @@ const finishFreeform = async (e) => {
     const payload = {
       "text": freeformText,
       "samples": 1,
-      "length_per_setence": 200,
+      "length_per_setence": 150,
       "top_k": 40,
       "top_p": 0.9
     };
     freeformOutput.innerHTML = 'Loading...';
     const freeformResponse = await predictions(payload);
+    freeformText = (freeformText+"").replace(/\n/g, '<br>');
     freeformResponse[0] = (freeformResponse[0] + "").replace(/\n/g, '<br>');
     console.log(freeformResponse[0]);
     freeformOutput.innerHTML = `<strong>${freeformText}</strong>` + freeformResponse[0];
@@ -87,8 +88,8 @@ const finishFreeform = async (e) => {
 freeformForm.addEventListener("submit", finishFreeform, false);
 
 const predictions = async (text) => {
-  //const url = 'http://98.253.67.62:1338/predict';
-  const url = 'http://192.168.86.2:5000/predict';
+  const url = 'http://98.253.67.62:1338/predict';
+  //const url = 'http://192.168.86.2:5000/predict';
   const response = await fetch(url, {
     method: "POST",
     cache: 'no-cache',
