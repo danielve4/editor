@@ -33,7 +33,7 @@ let triggerWordPredictions = async () => {
   const payload = {
     "text": context ? context : '<|endoftext|>',
     "samples": 3,
-    "length_per_setence": 4,
+    "length_per_setence": 3,
     "top_k": 40,
     "top_p": 0.9
   }
@@ -74,7 +74,8 @@ const finishFreeform = async (e) => {
       "samples": 1,
       "length_per_setence": 150,
       "top_k": 40,
-      "top_p": 0.9
+      "top_p": 0.90,
+      "temperature": 1.0
     };
     freeformOutput.innerHTML = 'Loading...';
     const freeformResponse = await predictions(payload);
