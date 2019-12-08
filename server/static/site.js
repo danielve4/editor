@@ -39,6 +39,8 @@ class UI {
     this.io = socketHandler;
     this.editorInit();
     this.registerWritingPredictionAction();
+    this.registerFreeformCompletionHandler();
+    this.registerFreeFormEventListener();
   }
 
   editorInit() {
@@ -81,9 +83,35 @@ class UI {
   getTextInEditorUpToCursor() {
     return this.editor.getText(0, this.suggestions.getCursorPos());
   }
+
+  registerFreeFormEventListener() {
+    this.freeformForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let freeformText = this.freeformInput.value;
+      if (freeformText.length > 0) {
+        const payload = {
+          text: freeformText,
+          samples: 3,
+          length_per_setence: 150,
+          top_k: 40,
+          top_p: 0.90,
+          temperature: 1.0
+        };
+        this.freeformOutput.innerHTML = `<strong>${(freeformText + "").replace(/\n/g, '<br>')}</strong>`;
+        this.io.socket.emit('freeform_request', JSON.stringify(payload));
+      }
+    }, false)
+  }
+
+  registerFreeformCompletionHandler() {
+    this.io.registerCustomHandler('freeform_completion', (completion) => {
+      let freeformCompletion = (completion.data + "").replace(/\n/g, '<br>');
+      this.freeformOutput.innerHTML += freeformCompletion;
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const socketHandler = new SocketHandler(io());
+  const socketHandler = new SocketHandler(io('http://localhost:5000',{ transports: ['websocket'] }));
   const app = new UI(socketHandler);
 });
