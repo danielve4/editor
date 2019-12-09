@@ -17,8 +17,10 @@ models = {
     'gpt2': GPT2LMHeadModel.from_pretrained('gpt2'),
     'gpt2-medium': GPT2LMHeadModel.from_pretrained('gpt2-medium'),
     'gpt2-large': GPT2LMHeadModel.from_pretrained('gpt2-large'),
-    'gd-tf-xl': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/gd-xl-tf-200'),
-    'gd-pyt-xl': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/examples/gd-xl-274-pyt/checkpoint-200')
+    'gd-tf-xl-200': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/gd-xl-tf-200'),
+    'gd-pyt-xl-200': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/examples/gd-xl-274-pyt/checkpoint-200'),
+    'gd-tf-xl-274': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/gd-xl-tf-274'),
+    'gd-pyt-xl-274': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/examples/gd-xl-274-pyt')
 }
 
 print('Initializing tokenizers')
