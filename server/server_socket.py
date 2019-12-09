@@ -73,11 +73,12 @@ def tokenize_input(string, model_name, num_samples=1, device='cpu'):
 
 def generate_tokens_with(context_str, model_name, prev_generated=None, length=1, num_samples=1, temperature=1, top_k=0, top_p=0.0, repetition_penalty=1.0, device='cpu'):
     # Tokenizing context
+    tokenizer_name = 'gpt2-xl' if 'xl' in model_name else model_name
     if prev_generated is not None:
         generated = prev_generated
         print("Using prev_generated")
     elif context_str is not None:
-        generated = tokenize_input(context_str, model_name, device=device)
+        generated = tokenize_input(context_str, tokenizer_name, device=device)
         print("Using context_str")
 
     next_tokens = torch.tensor([], dtype=torch.long, device=device)
@@ -105,7 +106,7 @@ def generate_tokens_with(context_str, model_name, prev_generated=None, length=1,
             generated = torch.cat((generated, next_token), dim=1)
             next_tokens = torch.cat((next_tokens, next_token), dim=1)
 
-    text = tokenizers[model_name].decode(next_tokens[0].tolist())
+    text = tokenizers[tokenizer_name].decode(next_tokens[0].tolist())
     return text, generated
 
 
@@ -198,7 +199,7 @@ def freeform_request(payload):
         temperature = float(freeform_parameters['temperature'])
 
     generated = None
-    token_length_increment = min(length_per_sentence, 5)
+    token_length_increment = min(length_per_sentence, 3)
     while length_per_sentence > 0 and len(rooms()) > 0:
         text, generated = generate_tokens_with(raw_text,
                                                model_name,
