@@ -202,7 +202,7 @@ def freeform_request(payload):
         temperature = float(freeform_parameters['temperature'])
 
     generated = None
-    token_length_increment = min(length_per_sentence, 5)
+    token_length_increment = min(length_per_sentence, 3)
     while length_per_sentence > 0 and len(rooms()) > 0:
         text, generated = generate_tokens_with(raw_text,
                                                model_name,
