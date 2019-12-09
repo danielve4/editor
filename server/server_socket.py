@@ -16,14 +16,17 @@ print('Initializing models')
 models = {
     'gpt2': GPT2LMHeadModel.from_pretrained('gpt2'),
     'gpt2-medium': GPT2LMHeadModel.from_pretrained('gpt2-medium'),
-    'gpt2-large': GPT2LMHeadModel.from_pretrained('gpt2-large')
+    'gpt2-large': GPT2LMHeadModel.from_pretrained('gpt2-large'),
+    'gd-tf-xl': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/gd-xl-tf-200'),
+    'gd-pyt-xl': GPT2LMHeadModel.from_pretrained('/home/dvega3/transformers/examples/gd-xl-274-pyt/checkpoint-200')
 }
 
 print('Initializing tokenizers')
 tokenizers = {
     'gpt2': GPT2Tokenizer.from_pretrained('gpt2'),
     'gpt2-medium': GPT2Tokenizer.from_pretrained('gpt2-medium'),
-    'gpt2-large': GPT2Tokenizer.from_pretrained('gpt2-large')
+    'gpt2-large': GPT2Tokenizer.from_pretrained('gpt2-large'),
+    'gpt2-xl': GPT2Tokenizer.from_pretrained('gpt2-xl')
 }
 
 eventlet.monkey_patch()
@@ -73,11 +76,12 @@ def tokenize_input(string, model_name, num_samples=1, device='cpu'):
 
 def generate_tokens_with(context_str, model_name, prev_generated=None, length=1, num_samples=1, temperature=1, top_k=0, top_p=0.0, repetition_penalty=1.0, device='cpu'):
     # Tokenizing context
+    tokenizer_name = 'gpt2-xl' if 'xl' in model_name else model_name
     if prev_generated is not None:
         generated = prev_generated
         print("Using prev_generated")
     elif context_str is not None:
-        generated = tokenize_input(context_str, model_name, device=device)
+        generated = tokenize_input(context_str, tokenizer_name, device=device)
         print("Using context_str")
 
     next_tokens = torch.tensor([], dtype=torch.long, device=device)
@@ -105,7 +109,7 @@ def generate_tokens_with(context_str, model_name, prev_generated=None, length=1,
             generated = torch.cat((generated, next_token), dim=1)
             next_tokens = torch.cat((next_tokens, next_token), dim=1)
 
-    text = tokenizers[model_name].decode(next_tokens[0].tolist())
+    text = tokenizers[tokenizer_name].decode(next_tokens[0].tolist())
     return text, generated
 
 
