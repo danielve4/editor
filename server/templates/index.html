@@ -15,15 +15,54 @@
 
 <body>
   <div id="page" class="grid-4 md-grid-12">
-    <h1 class="cols-4">WIZARD</h1>
-    <article class="cols-4 grid-4 md-cols-12">
-      <h2 class="cols-4">Word Predictor</h2>
-      <section class="cols-4 grid-4">
+    <h1 class="cols-4 md-cols-12">Wordcraft Wizard</h1>
+    <article class="cols-4 grid-4 md-grid-12 md-cols-12">
+      <h2 class="cols-4 md-cols-12">Writing Suggestions</h2>
+      <section class="cols-4">
+        <ul class="parameter-values">
+          <li class="grid-4">
+            <label for="editor-top-k" class="cols-2 parameter-label">Top K:</label>
+            <input type="number" id="editor-top-k" name="editor-top-k" class="cols-2" value="40" min="1" max="100"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="editor-top-p" class="cols-2 parameter-label">Top P:</label>
+            <input type="number" id="editor-top-p" name="editor-top-p" class="cols-2" value="0.90" min="0" max="1"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="editor-temperature" class="cols-2 parameter-label">Temperature:</label>
+            <input type="number" id="editor-temperature" name="editor-temperature" class="cols-2" value="1" min="0"
+              max="3" required>
+          </li>
+          <li class="grid-4">
+            <label for="editor-length" class="cols-2 parameter-label">Length:</label>
+            <input type="number" id="editor-length" name="editor-length" class="cols-2" value="3" min="1" max="5"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="editor-model" class="cols-2 parameter-label">Model:</label>
+            <select id="editor-model" class="cols-2">
+              <optgroup label="GPT-2 Sizes">
+                <option value="gpt2">Small</option>
+                <option value="gpt2-medium">Medium</option>
+                <option value="gpt2-large">Large</option>
+                <option value="gpt2-xl">XL (Full)</option>
+              </optgroup>
+              <optgroup label="Fine Tuned">
+                <option value="gd-tf-xl">GD TF XL</option>
+                <option value="gd-pyt-xl">GD PYT XL</option>
+              </optgroup>
+            </select>
+          </li>
+        </ul>
+      </section>
+      <section class="cols-4 md-cols-12 grid-4">
         <h3 class="cols-4">Padding Text</h2>
           <textarea rows="5" placeholder="Sample text here" id="padding-text" class="cols-4"></textarea>
       </section>
 
-      <section class="cols-4 grid-4">
+      <section class="cols-4 md-cols-12 grid-4">
         <h3 class="cols-4">Editor</h2>
           <div class="cols-4" id="editor-container">
             <div id="editor">
@@ -35,6 +74,42 @@
 
     <article class="cols-4 grid-4 md-cols-6">
       <h2 class="cols-4">Q &amp; A</h2>
+      <section class="cols-4">
+        <ul class="parameter-values">
+          <li class="grid-4">
+            <label for="qa-top-k" class="cols-2 parameter-label">Top K:</label>
+            <input type="number" id="qa-top-k" name="qa-top-k" class="cols-2" value="40" min="1" max="100" required>
+          </li>
+          <li class="grid-4">
+            <label for="qa-top-p" class="cols-2 parameter-label">Top P:</label>
+            <input type="number" id="qa-top-p" name="qa-top-p" class="cols-2" value="0.90" min="0" max="1" required>
+          </li>
+          <li class="grid-4">
+            <label for="qa-temperature" class="cols-2 parameter-label">Temperature:</label>
+            <input type="number" id="qa-temperature" name="qa-temperature" class="cols-2" value="1" min="0" max="3"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="qa-length" class="cols-2 parameter-label">Length:</label>
+            <input type="number" id="qa-length" name="qa-length" class="cols-2" value="70" min="1" max="150" required>
+          </li>
+          <li class="grid-4">
+            <label for="qa-model" class="cols-2 parameter-label">Model:</label>
+            <select id="qa-model" class="cols-2">
+              <optgroup label="GPT-2 Sizes">
+                <option value="gpt2">Small</option>
+                <option value="gpt2-medium">Medium</option>
+                <option value="gpt2-large">Large</option>
+                <option value="gpt2-xl">XL (Full)</option>
+              </optgroup>
+              <optgroup label="Fine Tuned">
+                <option value="gd-tf-xl">GD TF XL</option>
+                <option value="gd-pyt-xl">GD PYT XL</option>
+              </optgroup>
+            </select>
+          </li>
+        </ul>
+      </section>
       <form id="ask-question-form" class="cols-4 grid-4">
         <label for="question" class="cols-1">Question:</label>
         <input type="text" id="question" name="question" class="cols-4" placeholder="Your question here...">
@@ -47,6 +122,45 @@
 
     <article class="cols-4 grid-4 md-cols-6">
       <h2 class="cols-4">Freeform Prompt</h2>
+      <section class="cols-4">
+        <ul class="parameter-values">
+          <li class="grid-4">
+            <label for="freeform-top-k" class="cols-2 parameter-label">Top K:</label>
+            <input type="number" id="freeform-top-k" name="freeform-top-k" class="cols-2" value="40" min="1" max="100"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="freeform-top-p" class="cols-2 parameter-label">Top P:</label>
+            <input type="number" id="freeform-top-p" name="freeform-top-p" class="cols-2" value="0.90" min="0" max="1"
+              required>
+          </li>
+          <li class="grid-4">
+            <label for="freeform-temperature" class="cols-2 parameter-label">Temperature:</label>
+            <input type="number" id="freeform-temperature" name="freeform-temperature" class="cols-2" value="1" min="0"
+              max="3" required>
+          </li>
+          <li class="grid-4">
+            <label for="freeform-length" class="cols-2 parameter-label">Length:</label>
+            <input type="number" id="freeform-length" name="freeform-length" class="cols-2" value="150" min="1"
+              max="300" required>
+          </li>
+          <li class="grid-4">
+            <label for="freeform-model" class="cols-2 parameter-label">Model:</label>
+            <select id="freeform-model" class="cols-2">
+              <optgroup label="GPT-2 Sizes">
+                <option value="gpt2">Small</option>
+                <option value="gpt2-medium">Medium</option>
+                <option value="gpt2-large">Large</option>
+                <option value="gpt2-xl">XL (Full)</option>
+              </optgroup>
+              <optgroup label="Fine Tuned">
+                <option value="gd-tf-xl">GD TF XL</option>
+                <option value="gd-pyt-xl">GD PYT XL</option>
+              </optgroup>
+            </select>
+          </li>
+        </ul>
+      </section>
       <form id="freeform-form" class="cols-4 grid-4">
         <textarea rows="5" placeholder="Sample text here" id="freeform-text" class="cols-4"></textarea>
         <input type="submit" id="finish-freeform" value="Finish Freeform" class="cols-4">

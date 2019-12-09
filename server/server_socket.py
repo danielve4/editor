@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, jsonify, render_template, send_from_directory
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, leave_room, join_room, rooms
 import torch
 import torch.nn.functional as F
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
@@ -12,13 +12,23 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'wizard'
 socketio = SocketIO(app, logger=True, engineio_logger=True)
 
-print('Initializing model')
-model = GPT2LMHeadModel.from_pretrained('gpt2-xl')
+print('Initializing models')
+models = {
+    'gpt2': GPT2LMHeadModel.from_pretrained('gpt2'),
+    'gpt2-medium': GPT2LMHeadModel.from_pretrained('gpt2-medium'),
+    'gpt2-large': GPT2LMHeadModel.from_pretrained('gpt2-large')
+}
 
-print('Initializing tokenizer')
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2-xl')
+print('Initializing tokenizers')
+tokenizers = {
+    'gpt2': GPT2Tokenizer.from_pretrained('gpt2'),
+    'gpt2-medium': GPT2Tokenizer.from_pretrained('gpt2-medium'),
+    'gpt2-large': GPT2Tokenizer.from_pretrained('gpt2-large')
+}
 
 eventlet.monkey_patch()
+
+
 def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')):
     """ Filter a distribution of logits using top-k and/or nucleus (top-p) filtering
         Args:
@@ -54,20 +64,20 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
     return logits
 
 
-def tokenize_input(string, num_samples=1, device='cpu'):
-    tokens = tokenizer.encode(string, add_special_tokens=False)
+def tokenize_input(string, model_name, num_samples=1, device='cpu'):
+    tokens = tokenizers[model_name].encode(string, add_special_tokens=False)
     tokens = torch.tensor(tokens, dtype=torch.long, device=device)
     tokens = tokens.unsqueeze(0).repeat(num_samples, 1)
     return tokens
 
 
-def generate_tokens_with(context_str, prev_generated=None, length=1, num_samples=1, temperature=1, top_k=0, top_p=0.0, repetition_penalty=1.0, device='cpu'):
+def generate_tokens_with(context_str, model_name, prev_generated=None, length=1, num_samples=1, temperature=1, top_k=0, top_p=0.0, repetition_penalty=1.0, device='cpu'):
     # Tokenizing context
     if prev_generated is not None:
         generated = prev_generated
         print("Using prev_generated")
     elif context_str is not None:
-        generated = tokenize_input(context_str, device=device)
+        generated = tokenize_input(context_str, model_name, device=device)
         print("Using context_str")
 
     next_tokens = torch.tensor([], dtype=torch.long, device=device)
@@ -76,7 +86,7 @@ def generate_tokens_with(context_str, prev_generated=None, length=1, num_samples
         for _ in trange(length):
             inputs = {'input_ids': generated}
             # Passing tokenized context to model. **inputs simply passes the 'generated' value
-            outputs = model(**inputs)
+            outputs = models[model_name](**inputs)
             next_token_logits = outputs[0][:, -1, :] / \
                 (temperature if temperature > 0 else 1.)
 
@@ -92,10 +102,10 @@ def generate_tokens_with(context_str, prev_generated=None, length=1, num_samples
             else:
                 next_token = torch.multinomial(
                     F.softmax(filtered_logits, dim=-1), num_samples=1)
-                generated = torch.cat((generated, next_token), dim=1)
-                next_tokens = torch.cat((next_tokens, next_token), dim=1)
+            generated = torch.cat((generated, next_token), dim=1)
+            next_tokens = torch.cat((next_tokens, next_token), dim=1)
 
-    text = tokenizer.decode(next_tokens[0].tolist())
+    text = tokenizers[model_name].decode(next_tokens[0].tolist())
     return text, generated
 
 
@@ -107,27 +117,76 @@ def index():
 @socketio.on('connect')
 def test_connect():
     print('Client connected')
-    emit('my response', {'data': 'Connected'})
+    join_room('clients')
 
 
-@socketio.on('writing_prediction')
+@socketio.on('completion_request')
 def writing_prediction(payload):
-    print("writing_prediction")
-    emit('writing_suggestions', {'data': '["Daniel","Vega"]'})
-
-
-def handle_freeform(payload):
-    freeform_parameters = json.loads(payload)
-    raw_text = str(freeform_parameters['text'])
-    length_per_sentence = 5
+    print("completion_request")
+    prediction_parameters = json.loads(payload)
+    raw_text = str(prediction_parameters['text'])
+    model_name = 'gpt2'
+    length_per_sentence = 10
     samples = 1
     top_k = 40
     top_p = 0.9
-    if 'length_per_setence' in freeform_parameters:
-        length_per_sentence = int(freeform_parameters['length_per_setence'])
+    temperature = 1
+    event_name_response = 'writing_suggestions'
 
-    if 'samples' in freeform_parameters:
-        samples = int(freeform_parameters['samples'])
+    if 'model_name' in prediction_parameters:
+        model_name_requested = str(prediction_parameters['model_name'])
+        if model_name_requested in models:
+            model_name = model_name_requested
+
+    if 'length_per_sentence' in prediction_parameters:
+        length_per_sentence = int(prediction_parameters['length_per_sentence'])
+
+    if 'samples' in prediction_parameters:
+        samples = int(prediction_parameters['samples'])
+
+    if 'top_k' in prediction_parameters:
+        top_k = int(prediction_parameters['top_k'])
+
+    if 'top_p' in prediction_parameters:
+        top_p = float(prediction_parameters['top_p'])
+
+    if 'temperature' in prediction_parameters:
+        temperature = float(prediction_parameters['temperature'])
+
+    if 'event_name_response' in prediction_parameters:
+        event_name_response = str(prediction_parameters['event_name_response'])
+
+    prediction_tokens = []
+    for _ in range(samples):
+        text, _ = generate_tokens_with(raw_text,
+                                       model_name,
+                                       length=length_per_sentence,
+                                       temperature=temperature,
+                                       top_k=top_k,
+                                       top_p=top_p)
+        prediction_tokens.append(text)
+
+    emit(event_name_response, {'data': json.dumps(prediction_tokens)})
+
+
+@socketio.on('freeform_request')
+def freeform_request(payload):
+    print("freeform_request")
+    freeform_parameters = json.loads(payload)
+    raw_text = str(freeform_parameters['text'])
+    model_name = 'gpt2'
+    length_per_sentence = 5
+    top_k = 40
+    top_p = 0.9
+    temperature = 1
+
+    if 'model_name' in freeform_parameters:
+        model_name_requested = str(freeform_parameters['model_name'])
+        if model_name_requested in models:
+            model_name = model_name_requested
+
+    if 'length_per_sentence' in freeform_parameters:
+        length_per_sentence = int(freeform_parameters['length_per_sentence'])
 
     if 'top_k' in freeform_parameters:
         top_k = int(freeform_parameters['top_k'])
@@ -135,35 +194,28 @@ def handle_freeform(payload):
     if 'top_p' in freeform_parameters:
         top_p = float(freeform_parameters['top_p'])
 
+    if 'temperature' in freeform_parameters:
+        temperature = float(freeform_parameters['temperature'])
+
     generated = None
     token_length_increment = min(length_per_sentence, 5)
-    while length_per_sentence > 0:
-        text, generated = generate_tokens_with(context_str=raw_text,
+    while length_per_sentence > 0 and len(rooms()) > 0:
+        text, generated = generate_tokens_with(raw_text,
+                                               model_name,
                                                prev_generated=generated,
                                                length=token_length_increment,
+                                               temperature=temperature,
                                                top_k=top_k,
                                                top_p=top_p)
         length_per_sentence -= token_length_increment
         token_length_increment = length_per_sentence if length_per_sentence < token_length_increment else token_length_increment
         emit('freeform_completion', {'data': text})
 
-@socketio.on('freeform_request')
-def freeform_request(payload):
-    print("freeform_request")
-    handle_freeform(payload)
-
-    # stri = ""
-    # for i in range(0, 55):
-    #     stri += str(i) + " "
-    #     if(i % 10 == 0 or i == 54):
-    #         emit('freeform_completion', {'data': stri + "\n"})
-    #         time.sleep(1)
-    #         stri = ""
-
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
+    leave_room('clients')
 
 
 if __name__ == '__main__':
